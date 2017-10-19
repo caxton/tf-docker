@@ -1,21 +1,28 @@
-FROM ubuntu:16.04
+FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
 
 MAINTAINER Caxton Chan <caxton_chan@htc.com>
 
-ARG TENSORFLOW_VERSION=1.3.0 
-ARG TENSORFLOW_ARCH=cpu
+ARG TENSORFLOW_VERSION=1.3.0
+ARG TENSORFLOW_ARCH=gpu
 
 # Install some dependencies
 RUN apt-get update && apt-get install -y \
 		curl \
+		git \
 		python-dev \
 		unzip \
 		vim \
 		wget \
+		python-dev \
+		python-tk \
+		python-numpy \
+		python3-dev \
+		python3-tk \
+		python3-numpy \
 		&& \
 	apt-get clean && \
 	apt-get autoremove && \
-	rm -rf /var/lib/apt/lists/*
+        rm -rf /var/lib/apt/lists/*
 
 # Install pip
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
@@ -64,7 +71,7 @@ RUN pip --no-cache-dir install --upgrade ipython && \
 
 # Install TensorFlow
 RUN pip --no-cache-dir install \
-	https://storage.googleapis.com/tensorflow/linux/${TENSORFLOW_ARCH}/tensorflow-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
+	https://storage.googleapis.com/tensorflow/linux/${TENSORFLOW_ARCH}/tensorflow_${TENSORFLOW_ARCH}-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 
 # Set up notebook config
 COPY jupyter_notebook_config.py /root/.jupyter/
